@@ -1,0 +1,20 @@
+{
+    "name": "zler/swoole",
+    "description": "the swoole study base.",
+    "authors": [
+        {
+            "name": "SymfonyCordova",
+            "email": "978451251@qq.com"
+        }
+    ],
+    "autoload":{
+        "psr-4":{
+            "": "src/",
+            "Tests\\": "tests/"
+        }
+    },
+    "require": {},
+    "require-dev": {
+        "swoole/ide-helper": "^4.4"
+    }
+}

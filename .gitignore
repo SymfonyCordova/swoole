@@ -1,0 +1,4 @@
+/vendor/
+/.idea
+/swoolestart/tests
+composer.lock
