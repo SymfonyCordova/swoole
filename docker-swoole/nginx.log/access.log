@@ -16,3 +16,8 @@
 172.17.0.1 - - [30/Sep/2019:13:12:26 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36"
 172.17.0.1 - - [30/Sep/2019:13:12:26 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36"
 172.17.0.1 - - [30/Sep/2019:13:12:27 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36"
+172.17.0.1 - - [30/Sep/2019:14:38:37 +0000] "GET / HTTP/1.1" 200 397 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36"
+172.17.0.1 - - [30/Sep/2019:14:38:37 +0000] "GET /favicon.ico HTTP/1.1" 404 209 "http://172.17.0.2/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36"
+172.17.0.1 - - [30/Sep/2019:14:38:50 +0000] "GET / HTTP/1.1" 200 397 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36"
+172.17.0.1 - - [30/Sep/2019:14:38:50 +0000] "GET /favicon.ico HTTP/1.1" 404 209 "http://localhost/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36"
+172.17.0.1 - - [30/Sep/2019:14:38:54 +0000] "GET /asd HTTP/1.1" 404 209 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36"

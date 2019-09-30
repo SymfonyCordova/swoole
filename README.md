@@ -4,11 +4,11 @@
     下拉镜像
         sudo docker pull registry.cn-hangzhou.aliyuncs.com/symfonycordova/sfswoole:v1
     运行镜像
-        sudo docker run --name swoole -p 80:80 \
-        -v ./docker-swoole/mysql.conf.d:/etc/mysql/custom.conf.d \
-        -v ./docker-swoole/mysql.data:/var/lib/mysql \
-        -v ./docker-swoole/mysql.log:/var/log/mysql \
-        -v ./docker-swoole/nginx.conf.d:/etc/nginx/conf.d \
-        -v ./docker-swoole/nginx.log:/var/log/nginx \
-        -v ./docker-swoole/html:/var/www/html \
-        -v ./docker-swoole/redis:/etc/redis -d symfonycordova/sfswoole:v1
+        sudo docker run --name swoole -p 80:80 -p 443:443 -p 3306:3306 -p 6379:6379 \
+        -v $(pwd)/docker-swoole/mysql.conf.d:/etc/mysql/custom.conf.d \
+        -v $(pwd)/docker-swoole/mysql.data:/var/lib/mysql \
+        -v $(pwd)/docker-swoole/mysql.log:/var/log/mysql \
+        -v $(pwd)/docker-swoole/nginx.conf.d:/etc/nginx/conf.d \
+        -v $(pwd)/docker-swoole/nginx.log:/var/log/nginx \
+        -v $(pwd)/docker-swoole/html:/var/www/html \
+        -v $(pwd)/docker-swoole/redis:/etc/redis -d registry.cn-hangzhou.aliyuncs.com/symfonycordova/sfswoole:v1

@@ -2,3 +2,5 @@
 2019/09/30 12:53:13 [error] 25#25: *1 directory index of "/var/www/html/" is forbidden, client: 172.17.0.1, server: _, request: "GET / HTTP/1.1", host: "172.17.0.3"
 2019/09/30 13:04:57 [notice] 581#581: signal process started
 2019/09/30 13:06:53 [notice] 600#600: signal process started
+2019/09/30 14:38:50 [error] 25#25: *3 open() "/var/www/html/favicon.ico" failed (2: No such file or directory), client: 172.17.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/"
+2019/09/30 14:38:54 [error] 25#25: *3 open() "/var/www/html/asd" failed (2: No such file or directory), client: 172.17.0.1, server: localhost, request: "GET /asd HTTP/1.1", host: "localhost"
