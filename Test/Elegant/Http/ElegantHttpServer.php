@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Elegant\Http;
+namespace Test\Elegant\Http;
 
 
 use Swoole\Http\Request;

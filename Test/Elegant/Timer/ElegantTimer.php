@@ -1,6 +1,6 @@
 <?php
 
-namespace Elegant\Timer;
+namespace Test\Elegant\Timer;
 
 use Swoole\Timer;
 

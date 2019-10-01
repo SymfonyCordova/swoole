@@ -1,6 +1,6 @@
 <?php
 
-namespace Elegant\Tcp;
+namespace Test\Elegant\Tcp;
 
 use Swoole\Client;
 

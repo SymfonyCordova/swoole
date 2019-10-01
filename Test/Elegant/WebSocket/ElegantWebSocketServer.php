@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Elegant\WebSocket;
+namespace Test\Elegant\WebSocket;
 
 use Swoole\WebSocket\Server;
 

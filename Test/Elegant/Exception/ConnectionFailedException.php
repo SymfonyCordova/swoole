@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Elegant\Exception;
+namespace Test\Elegant\Exception;
 
 
 class ConnectionFailedException extends \Exception

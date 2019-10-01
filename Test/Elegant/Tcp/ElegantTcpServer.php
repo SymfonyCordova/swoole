@@ -1,10 +1,10 @@
 <?php
 
-namespace Elegant\Tcp;
+namespace Test\Elegant\Tcp;
 
 use Swoole\Server;
 
-class ElegantTcpAsyncServer
+class ElegantTcpServer
 {
     private $server;
     private $daemon = false;
@@ -13,29 +13,23 @@ class ElegantTcpAsyncServer
     private $MasterPid;
     private $connections;
     private $port;
-    private $taskWorkerNum; //需要设置该参数
 
-    public function __construct($port = 9501)
+    public function __construct($port)
     {
-        $this->port = $port;
+        $this->port = $port ? $port : 9501;
         $this->server = new Server("0.0.0.0", $this->port);
 
         $this->server->set(array(
             'worker_num' => $this->workerNum,
             'daemonize' => $this->daemon,
-            "task_worker_num" => $this->taskWorkerNum ? $this->taskWorkerNum : 4,
         ));
 
-        $this->MasterPid = $this->server->master_pid;
-        $this->ManagerPid = $this->server->manager_pid;
+        $this->MasterPid = $this->server->master_pid;  //主进程的PID，通过向主进程发送SIGTERM信号可安全关闭服务器
+        $this->ManagerPid = $this->server->manager_pid;  //管理进程的PID，通过向管理进程发送SIGUSR1信号可实现柔性重启
 
         $this->server->on('Start', array($this, 'onStart'));
         $this->server->on('Connect', array($this, 'onConnect'));
-
         $this->server->on('Receive', array($this, 'onReceive'));
-        $this->server->on('task', array($this, 'onTask'));
-        $this->server->on('finish', array($this, 'onFinish'));
-
         $this->server->on('Close', array($this, 'onClose'));
     }
 
@@ -51,39 +45,20 @@ class ElegantTcpAsyncServer
      */
     public function onConnect(Server $server, $fd, $from_id)
     {
-        //$server->send( $fd, "Hello {$fd}!" );
+        $server->send( $fd, "Hello {$fd}!" );
     }
 
     /**
-     * 1.worker投递异步任务到task
      * @param swoole_server $server 服务器信息
      * @param $fd 客户端信息
      * @param $from_id 客户端id
      * @param $data 传来的数据
      */
-    public function onReceive(Server $server, $fd, $from_id, $data)
+    public function onReceive(Server $server, $fd, $from_id, $data )
     {
-        $taskId = $server->task($data); //获取异步ID
-        echo "异步ID: {$taskId}\n";
+        echo "Get Message From Client {$fd}:{$data}\n";
+        var_dump($data);
         $server->send($fd, $data);
-    }
-
-    /**
-     * 2. task接收到worker的数据进行处理
-     * @param Server $server
-     * @param $taskId
-     * @param $fromId
-     * @param $data
-     */
-    public function onTask(Server $server, $taskId, $fromId, $data)
-    {
-        echo "执行异步ID： {$taskId} \n";
-        $server->finish("{$data} -> OK \n"); // 3.task处理完成后通知给worker
-    }
-
-    public function onFinish(Server $server, $taskId, $data)
-    {
-        echo "执行完成 \n";
     }
 
     /**

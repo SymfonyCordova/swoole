@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Elegant\Udp;
+namespace Test\Elegant\Udp;
 
 use Swoole\Server;
 

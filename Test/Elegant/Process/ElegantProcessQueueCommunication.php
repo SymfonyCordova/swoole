@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Elegant\Process;
+namespace Test\Elegant\Process;
 
 
 use Swoole\Process;

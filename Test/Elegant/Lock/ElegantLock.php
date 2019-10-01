@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Elegant\Lock;
+namespace Test\Elegant\Lock;
 
 
 use Swoole\Lock;

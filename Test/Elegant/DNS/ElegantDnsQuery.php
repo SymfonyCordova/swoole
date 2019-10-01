@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Elegant\DNS;
+namespace Test\Elegant\DNS;
 
 
 class ElegantDnsQuery
