@@ -11,10 +11,25 @@
         "psr-4":{
             "": "src/",
             "Test\\": "Test/"
-        }
+        },
+        "classmap": [ "app/AppKernel.php" ]
     },
-    "require": {},
+    "require": {
+        "pimple/pimple": "^3.2",
+        "symfony/yaml": "^4.3",
+        "symfony/console": "^4.3",
+        "symfony/http-foundation": "^4.3",
+        "symfony/dependency-injection": "^4.3",
+        "symfony/routing": "^4.3",
+        "symfony/config": "^4.3"
+    },
     "require-dev": {
-        "swoole/ide-helper": "^4.4"
+        "swoole/ide-helper": "@dev"
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
     }
 }

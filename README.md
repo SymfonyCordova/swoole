@@ -123,3 +123,178 @@
         基于c语言封装的进程管理模块,方便PHP的多进程管理
         内置管道,消息队列接口,可方便实现进程通信
         提供自定义信号的管理
+
+## HttpServer
+    HttpServer本质是swoole_server,其协议解析部分固定使用http协议解析
+    完整的Http协议请求会被解析并封装在swoole_http_request对象内
+    所有的Http响应都通过swoole_http_respose对象进行封装和发送
+    
+    回调函数onRequest
+        swoole_http_server不接收onReceive回调,但是可以使用TaskWorker和定时器
+        swoole_http_server可以使用诸如onStart,onWorkerStart等回调
+        $response/$request对象传递给其他函数时不要加&引用符号
+    swoole_http_request
+        $header Http请求的头部信息.类型为数组,所有key均为小写
+        $server Http请求相关信息
+        $get Http请求的GET参数,相当于PHP中的$_GET
+        $post Http请求的POST参数,相当于PHP中的$_POST,Content-type限定为application/x-www-form-urlencoded
+        $cookie Http请求的COOKIE参数,相当于PHP的$_COOKIE
+        $files Http上传文件的文件信息,相当于PHP的$_FILES
+        rawContent() 原始的Http Post内容,用于非application/x-www-form-urlencoded格式的请求比如json,xml
+        
+        注意:
+            除了header和server外,其他四个变量可能没有赋值,因此使用前时使用isset判定
+    swoole_http_response
+        swoole_http_response::header($key, $value);
+            设置Http响应头信息
+        swoole_http_response::cookie($key, $value='',$path='/',$domain='',$secure=false,$httponly=false);
+            设置Http响应的COOKIE信息,等效于PHP的setcookie函数
+        swoole_http_response::status($code);
+            设置Http响应的状态码,如200,404,503等
+        swoole_http_response::gzip($level=1);
+            开启GZIP压缩
+        swoole_http_response::write($data);
+            启用Http Chunk分段向浏览器发送相关内容
+        swoole_http_response::sendfile($filename);
+            发送文件到浏览器
+        swoole_http_response::end($key, $value);
+            发送Http响应
+
+## WebSocket
+    WebSocketServer是在swoole_http_server基础上增加协议解析
+    完整的websocket协议请求会被解析并封装在frame对象内
+    新增push方法用于发送websocket数据
+    
+    在websocketserver中也可以使用onRequest这样很好的解决了http发送请求进行群发什么的
+    但是是要区分connect是http连接还是websocket连接
+    
+## 多协议多端口
+    EOF协议
+        data EOF data EOF data EOF
+        用一组固定的,不会在正常数据内出现的字符串作为分割协议的标记,称之为EOF协议
+```php
+    class Server 
+    {
+        private $server;
+        public function __construct() {
+            $this->server = new swoole_server("0.0.0.0", 9501);
+            $this->server->set(array(
+                'worker_num' => 1,
+                'daemonize' => false,
+                'max_request' => 10000,
+                'dispatch_mode' => 2,
+                'package_max_length' => 8192, //一个完整包的大小 每个连接来的时候的缓冲区
+                //'open_eof_check' => true, //开启eof检测
+                'open_eof_split' => true, //开启eof检测
+                'package_eof' => "\r\n", //用来标记什么来结尾
+            ));
+            $this->server->on('Start', array($this, 'onStrat'));
+            $this->server->on('Connect', array($this, 'onConnect'));
+            $this->server->on('Receive', array($this, 'onReceive'));
+            $this->server->on('Close', array($this, 'cc'));
+        }    
+        
+        public function onStrat($server){
+            echo "Start \n";
+        }
+
+        public function onConnect($server, $fd, $fromId){
+            echo "Client {$fd} connect\n";
+        }
+
+        public function onReceive(swoole_server $server, $fd, $fromId, $data){
+            //这里接收的是swoole帮我拆分好的包
+            var_dump($data);
+        }
+        
+        public function onClose(){}
+    }
+```
+    固定包头协议
+        header length header data
+        比如固定头是20个字节
+        在数据首部加上一组固定格式的数据作为协议头,称之为固定头协议
+        协议头的格式必须固定,并且其中需要标明后续数据的长度
+        长度字段格式只支持"S,L,N,V"和"s,l,n,v" 
+```php
+    class Server 
+    {
+        private $server;
+        public function __construct() {
+            $this->server = new swoole_server("0.0.0.0", 9501);
+            $this->server->set(array(
+                'worker_num' => 1,
+                'daemonize' => false,
+                'max_request' => 10000,
+                'dispatch_mode' => 2,
+                'package_max_length' => 8192, //一个完整包的大小 每个连接来的时候的缓冲区
+                'open_length_check' => true, //开启固定包头检测
+                'package_length_offset' => 0, // 从头开始的偏移量
+                'package_body_offset' => 4,
+                'package_length_type' => N, //从头开始的偏移量读多的长度
+            ));
+            $this->server->on('Start', array($this, 'onStrat'));
+            $this->server->on('Connect', array($this, 'onConnect'));
+            $this->server->on('Receive', array($this, 'onReceive'));
+            $this->server->on('Close', array($this, 'cc'));
+        }    
+        
+        public function onStrat($server){
+            echo "Start \n";
+        }
+
+        public function onConnect($server, $fd, $fromId){
+            echo "Client {$fd} connect\n";
+        }
+
+        public function onReceive(swoole_server $server, $fd, $fromId, $data){
+            //拆包
+            $length = unpack("N", $data)[1];
+            echo "Length = {$length}\n";
+            $msg = substr($data, -$length);
+            echo "Get Message From Client {$fd}:{$msg}";
+        }
+        
+        public function onClose(){
+            echo "Client {$fd} close connection\n";
+        }
+    }
+
+    class Client {
+        private $client;
+        public function __construct() {
+            $this->client = new swoole_client(SWOOLE_SOCK_TCP);
+            $this->connect();
+        }
+        public function connect() {
+            if(!$this->client->connect('127.0.0.1', 9501, 1)){
+                echo "Error: {$this->client->errMsg} {$this->client->errCode} \n";
+            }
+            $msg_normal = "This is a Msg";
+            $msg_length = pack("N", strlen($msg_normal)).$msg_normal;
+            $i = 0;
+            while($i < 100) {
+                var_dump("test");
+                $this->client->send($msg_length);
+                $i++;
+            }
+        }
+
+    }
+```
+    多端口
+        swoole_server::listen
+        函数功能: 创建一个额外的监听端口
+        函数原型:
+            swoole_server_port swoole_server->listen(string $host, int $port, int $type);
+        注意事项
+            Listen方法返回一个swoole_sverer_port对象,可以调用set, on方法
+            新创建的端口需要设置协议参数,否则将会服用swoole_server的协议解析方法
+            创建的端口无法使用onRequest和OnMessage回调
+        这个用来做RPC通信,也可以用来通知内网的服务器,也可以用来和嵌入式通讯
+        这样的好处是可以和任意的通讯协议通讯
+        
+        Hprose-swoole
+            快速构建跨语言RPC的框架
+            项目内容
+                一个Http端口提供

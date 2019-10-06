@@ -1,0 +1,2 @@
+parameters:
+    debug: '%kernel.root_dir%'
