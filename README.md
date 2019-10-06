@@ -73,6 +73,7 @@
             onTimer是在调用tick方法的进程中回调,因此可以直接使用在Worker进程中声明的对象(局部变量无法访问到)
         Timer的清除
             Tick方法返回timer_id,可以使用swoole_time_clear清除指定的定时器
+
 ```php
         //每隔一段时间执行一次
         Timer::tick(2000, function ($timerId){
@@ -84,6 +85,7 @@
             echo "3000 后执行\n";
         });
 ```
+
     Timer-示例
         Swoole Crontab
         原理:使用tick方法,每1s检查一次crontab任务表,如果发现有需要执行的任务,就通知Worker进程处理任务
@@ -172,6 +174,7 @@
     EOF协议
         data EOF data EOF data EOF
         用一组固定的,不会在正常数据内出现的字符串作为分割协议的标记,称之为EOF协议
+
 ```php
     class Server 
     {
@@ -209,6 +212,7 @@
         
         public function onClose(){}
     }
+
 ```
     固定包头协议
         header length header data
@@ -282,6 +286,7 @@
 
     }
 ```
+
     多端口
         swoole_server::listen
         函数功能: 创建一个额外的监听端口
